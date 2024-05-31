@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect, useRef, useState } from 'react';
+import Phaser from 'phaser';
+import phaserConfig from './phaserConfig'; // Import the configuration object
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [canMoveSprite, setCanMoveSprite] = useState(true);
+  const phaserRef = useRef(null);
+  const gameInstance = useRef(null); // To store the Phaser game instance
+
+  useEffect(() => {
+    // Initialize Phaser game when the component mounts
+    if (phaserRef.current) {
+      // Create a new instance of PhaserGame and set it in the config
+      const config = {
+        ...phaserConfig,
+        parent: phaserRef.current,
+        scene: new PhaserGame(), // Make sure to instantiate the scene
+      };
+
+      gameInstance.current = new Phaser.Game(config);
+
+      // Clean up the game instance when the component unmounts
+      return () => {
+        gameInstance.current.destroy(true);
+      };
+    }
+  }, [phaserRef]);
+
+  // Function to toggle sprite movement
+  const toggleSpriteMovement = () => {
+    setCanMoveSprite(!canMoveSprite);
+  };
+
+  // Effect to update the Phaser scene with the new canMoveSprite value
+  useEffect(() => {
+    if (gameInstance.current) {
+      const scene = gameInstance.current.scene.scenes[0];
+      if (scene && typeof scene.setCanMoveSprite === 'function') {
+        scene.setCanMoveSprite(canMoveSprite);
+      }
+    }
+  }, [canMoveSprite]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <button onClick={toggleSpriteMovement}>
+        {canMoveSprite ? 'Disable Sprite Movement' : 'Enable Sprite Movement'}
+      </button>
+      <div ref={phaserRef} />
+    </div>
+  );
 }
 
-export default App
+export default App;
