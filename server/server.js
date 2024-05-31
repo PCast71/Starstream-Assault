@@ -1,28 +1,34 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const config = require('./config/config');
+const path = require('path');
+const { createProxyMiddleware } = require('http-proxy-middleware'); // Importing http-proxy-middleware
+const db = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const leaderboardRoutes = require('./routes/leaderboardRoutes');
 
 const app = express();
 
 // Middleware handling
-
 app.use(cors());
 app.use(express.json());
 
-//Database link
-mongoose.connect(config.dbUri, { useNewUrlParser: true, useUnifiedTopology: true})
-.then(() => console.log("Connected to MongoDB"))
-.catch(err => console.log(err));
+// Serve static files (sprites)
+app.use(express.static('public'));
 
-//Establish Routes
-app.use('/api', authRoutes);
-app.use('/api/leaderboard', leaderboardRoutes);
+// Database connection
+db.once('open', () => {
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    });
 
-//Server Startup
-const PORT = process.env.PROT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-//Setup server.js to start testing when able to -PC
+// Establish Routes
+// app.use('/api', authRoutes);
+// app.use('/apieaderboard', leaderboardRoutes);
+
+// Set up proxy for backend API
+app.use('/', createProxyMiddleware({ target: 'http://localhost:5001', changeOrigin: true }));
+
+// Server Startup
+const PORT = process.env.PORT || 5000;
+
