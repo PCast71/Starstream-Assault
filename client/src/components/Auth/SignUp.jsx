@@ -24,6 +24,37 @@ const SignUp = () => {
     };
 
     return (
-        
-    )
-}
+        <div className="auth-container">
+            <form className="auth-form" onSubmit={{handleSignUp}}>
+                <h2>Enlist Now</h2>
+                <input
+                type='text'
+                placeholder='Username'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required 
+                />
+                <input 
+                type='password'
+                placeholder='Password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                />
+                <input 
+                type='password'
+                placeholder='Confirm Password'
+                value={confirmPassword}
+                onChange={(e) => setConfirmpassword(e.target.value)}
+                required
+                />
+                <button type='submit'>Submit</button>
+                {message && <p className="message">{message}</p>}
+            </form>
+        </div>
+    );
+};
+
+export default SignUp;
+
+// Handles players account set up -PC
