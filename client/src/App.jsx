@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Phaser from 'phaser';
-import phaserConfig from './phaserConfig'; // Import the configuration object
+import PhaserGame from "./components/Game/PhaserGame";
+
+import phaserConfig from './components/Game/PhaserConfig'; // Import the configuration object
 import './App.css';
 
 function App() {
@@ -9,9 +11,9 @@ function App() {
   const gameInstance = useRef(null); // To store the Phaser game instance
 
   useEffect(() => {
-    // Initialize Phaser game when the component mounts
+    
     if (phaserRef.current) {
-      // Create a new instance of PhaserGame and set it in the config
+   
       const config = {
         ...phaserConfig,
         parent: phaserRef.current,

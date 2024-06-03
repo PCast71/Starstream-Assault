@@ -1,4 +1,3 @@
-// Lorenzo - Phaser setup and sprites and eneimes.
 import Phaser from 'phaser';
 
 class PhaserGame extends Phaser.Scene {
@@ -9,13 +8,21 @@ class PhaserGame extends Phaser.Scene {
 
   preload() {
     // Load assets here
-    this.load.image('sprite', 'sprite here'); 
-
+    this.load.image('background', '/sprites/background/stars_1.png'); // Load background image
+    this.load.image('sprites', '/sprites/player/Ships/blue-1.png'); // Load player sprite
   }
 
   create() {
-    this.sprite = this.physics.add.sprite(400, 300, 'sprite');
+    // Create background
+    this.add.image(400, 300, 'background'); // Display background image
 
+    // Create sprite with physics enabled
+    this.sprite = this.physics.add.sprite(400, 300, 'player'); // Use 'player' instead of 'sprite'
+
+    // Define cursor keys for movement
+    this.cursors = this.input.keyboard.createCursorKeys();
+
+    // Listen to keyboard events
     this.input.keyboard.on('keydown', (event) => {
       if (this.canMoveSprite) {
         switch (event.key) {
@@ -36,18 +43,29 @@ class PhaserGame extends Phaser.Scene {
         }
       }
     });
+
+    // Listen to keyboard events for key release
+    this.input.keyboard.on('keyup', (event) => {
+      // Reset velocity when any arrow key is released
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        this.sprite.setVelocity(0);
+      }
+    });
   }
 
-  update() {
-    // Resets the velocity when no key is pressed
-    if (this.sprite) {
-      this.sprite.setVelocity(0);
-    }
-  }
+  // No need to modify the update method
 
   setCanMoveSprite(canMove) {
     this.canMoveSprite = canMove;
   }
 }
 
-export { PhaserGame };
+// Initialize the game
+const game = new Phaser.Game({
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  scene: PhaserGame
+});
+
+export default PhaserGame;

@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
-import { PhaserGame } from './game/PhaserGame';
+
+import  PhaserGame  from './PhaserGame';
 
 const phaserConfig = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  scene: PhaserGame,
+  scene: PhaserGame, // Ensure PhaserGame is defined above
   physics: {
     default: 'arcade',
     arcade: {

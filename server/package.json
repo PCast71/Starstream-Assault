@@ -1,0 +1,19 @@
+{
+    "name": "starstream-assault-backend",
+    "version": "1.0.0",
+    "description": "Backend for Starstream Assault game",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js",
+      "test": "echo \"No tests available\" && exit 0"
+    },
+    "keywords": [],
+    "author": "Lorenzo, Brenner, Patrick",
+    "license": "MIT",
+    "dependencies": {
+      "cors": "^2.8.5",
+      "express": "^4.17.1",
+      "mongoose": "^5.13.7"
+    }
+  }
+  
