@@ -16,8 +16,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/client": "^3.10.4",
+    "bcryptjs": "^2.4.3",
+    "express-validator": "^7.1.0",
     "http-proxy-middleware": "^3.0.0",
-    "phaser": "^3.55.2"
+    "jsonwebtoken": "^9.0.2",
+    "phaser": "^3.55.2",
+    "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
