@@ -16,9 +16,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/client": "^3.10.4",
+    "graphql": "^16.8.1",
     "http-proxy-middleware": "^3.0.0",
     "phaser": "^3.55.2",
-    "react-phaser-fiber": "^0.2.4"
+    "react-phaser-fiber": "^0.2.4",
+    "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
@@ -27,6 +30,6 @@
     "concurrently": "^5.1.0",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^5.0.4"
   }
 }
