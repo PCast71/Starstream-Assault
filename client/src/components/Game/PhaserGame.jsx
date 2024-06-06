@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import BackgroundScene from './BackgroundScene';
 
 class PhaserGame extends Phaser.Scene {
   constructor() {
@@ -8,16 +9,15 @@ class PhaserGame extends Phaser.Scene {
 
   preload() {
     // Load assets
-    this.load.image('background', '/sprites/background/stars_1.png');
     this.load.image('player', '/sprites/player/Ships/blue-1.png'); // Ensure the key matches in create()
   }
 
   create() {
-    // Add background image
-    this.add.image(400, 300, 'background');
-
-    // Add player sprite with physics enabled
-    this.sprite = this.physics.add.sprite(400, 300, 'player');
+    // Add background scene
+    this.scene.add('BackgroundScene', BackgroundScene, true);
+ 
+    // Create player sprite
+    this.player = this.physics.add.sprite(400, 300, 'player'); // Create player sprite directly
 
     // Define cursor keys for arrow key movement
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -28,32 +28,32 @@ class PhaserGame extends Phaser.Scene {
 
   update() {
     if (this.canMoveSprite) {
-      this.sprite.setVelocity(0); // Reset velocity
+      this.player.setVelocity(0); // Reset velocity
 
       // Handle arrow key movement
       if (this.cursors.left.isDown) {
-        this.sprite.setVelocityX(-200);
+        this.player.setVelocityX(-100);
       } else if (this.cursors.right.isDown) {
-        this.sprite.setVelocityX(200);
+        this.player.setVelocityX(100);
       }
 
       if (this.cursors.up.isDown) {
-        this.sprite.setVelocityY(-200);
+        this.player.setVelocityY(-100);
       } else if (this.cursors.down.isDown) {
-        this.sprite.setVelocityY(200);
+        this.player.setVelocityY(100);
       }
 
       // Handle WASD key movement
       if (this.keys.A.isDown) {
-        this.sprite.setVelocityX(-200);
+        this.player.setVelocityX(-100);
       } else if (this.keys.D.isDown) {
-        this.sprite.setVelocityX(200);
+        this.player.setVelocityX(100);
       }
 
       if (this.keys.W.isDown) {
-        this.sprite.setVelocityY(-200);
+        this.player.setVelocityY(-100);
       } else if (this.keys.S.isDown) {
-        this.sprite.setVelocityY(200);
+        this.player.setVelocityY(100);
       }
     }
   }

@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
 
-import  PhaserGame  from './PhaserGame';
+import BackgroundScene from './BackgroundScene'; // Import BackgroundScene
 
 const phaserConfig = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
-  scene: PhaserGame, // Ensure PhaserGame is defined above
+  width: 1400,
+  height: 800,
+  scene: [BackgroundScene], // Pass BackgroundScene as an array
   physics: {
     default: 'arcade',
     arcade: {

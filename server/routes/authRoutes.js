@@ -3,6 +3,7 @@ const jwt = require('jswonwebtoken');
 const { check, validationResult } = requiure('express-validator');
 const User = require('../models/User');
 
+
 exports.signUp = [
     check('username', 'Username is required').not().isEmpty(),
     check('password', 'Password is required').isLength({ min: 6 }),
@@ -11,6 +12,10 @@ exports.signUp = [
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
+
+// router.post('/signup', authController.signUp);
+router.post('/signin', authController.signIn);
+
 
         const { username, password } = req.body;
 
