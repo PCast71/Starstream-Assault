@@ -11,6 +11,8 @@ class PhaserGame extends Phaser.Scene {
     // Load assets
     this.load.image('player', 'sprites/player/Ships/blue-1.png'); // Load player sprite
     // Ensure the key matches in create()
+    this.load.image('player', '/sprites/player/Ships/blue-1.png'); // Ensure the key matches in create()
+    this.load.image('enemy', '/sprites/player/Ships/Enemies/Enemies-1.png');
   }
 
   create() {
@@ -23,12 +25,29 @@ class PhaserGame extends Phaser.Scene {
 
     // Make the sprite bigger
     this.player.setScale(1.5); // Scale the sprite to twice its size
+    // Create enemy sprite
+    this.enemy = this.physics.add.sprite(1420, 400, 'enemy');
+
+    this.enemy.setVelocityX(900);
+
+    
+    this.scene.add('BackgroundScene', BackgroundScene, true);
+    this.scene.bringToTop();
+    
 
     // Define cursor keys for arrow key movement
     this.cursors = this.input.keyboard.createCursorKeys();
 
     // Define WASD keys for movement
     this.keys = this.input.keyboard.addKeys('W,A,S,D');
+
+    this.setRandomVelocity(this.enemy);
+
+    this.time.addEvent({
+      delay: 2000, // 2 seconds
+      callback: () => this.setRandomVelocity(this.enemy),
+      loop: true
+    });
   }
 
   update() {
@@ -65,6 +84,16 @@ class PhaserGame extends Phaser.Scene {
 
   setCanMoveSprite(canMove) {
     this.canMoveSprite = canMove;
+  }
+
+  setRandomVelocity(sprite) {
+    const minVelocity = -100;
+    const maxVelocity = 100;
+
+    const randomXVelocity = Phaser.Math.Between(minVelocity, maxVelocity);
+    const randomYVelocity = Phaser.Math.Between(minVelocity, maxVelocity);
+
+    sprite.setVelocity(randomXVelocity, randomYVelocity);
   }
 }
 
