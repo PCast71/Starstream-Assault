@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import PhaserGame from "./components/Game/PhaserGame";
 import phaserConfig from './components/Game/PhaserConfig'; // Import the configuration object
+import { AuthProvider } from './AuthContext';
 import './App.css';
 
 function App() {
