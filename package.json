@@ -15,6 +15,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+<<<<<<< HEAD
+=======
   "dependencies": {
     "@apollo/client": "^3.10.4",
 
@@ -37,13 +39,8 @@
 
 
   },
+>>>>>>> main
   "devDependencies": {
-    "@babel/core": "^7.14.0",
-    "@babel/preset-env": "^7.14.1",
-    "babel-loader": "^8.2.2",
-    "concurrently": "^5.1.0",
-    "webpack": "^5.36.2",
-    "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^5.0.4"
+    "concurrently": "^5.1.0"
   }
 }

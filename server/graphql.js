@@ -1,24 +1,24 @@
-const { ApolloServer, gql } = require('apollo-server-espress');
-const mongoose = require('mongoose');
+const { ApolloServer, gql } = require('apollo-server-express');
+const { Score } = require('./models/Score'); // Adjust the path accordingly
 
 // Defining Schema
 const typeDefs = gql`
-type Score {
-id: ID!
-username: String!
-score: Int!
-}
+    type Score {
+        id: ID!
+        username: String!
+        score: Int!
+    }
 
-type Query {
-leaderboard: [Score]
-}
+    type Query {
+        leaderboard: [Score]
+    }
 
-type Mutation {
-addScore(username: String!, score: Int!): Score
-}
+    type Mutation {
+        addScore(username: String!, score: Int!): Score
+    }
 `;
 
-//Defining resolvers
+// Defining resolvers
 const resolvers = {
     Query: {
         leaderboard: async () => {
@@ -33,14 +33,6 @@ const resolvers = {
     },
 };
 
-// MongoDB connection
-const Score = mongoose.model('Score', new mongoose.Schema({
-    username: String,
-    score: Number,
-}));
-
-//Apollo server
-const server = new ApolloServer({ typeDefs, resolver });
+// Apollo server
+const server = new ApolloServer({ typeDefs, resolvers });
 module.exports = server;
-
-// Created graphql.js to handle leaderboard scores
