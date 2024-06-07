@@ -9,19 +9,21 @@ class PhaserGame extends Phaser.Scene {
 
   preload() {
     // Load assets
-    this.load.image('player', '/sprites/player/Ships/blue-1.png'); // Ensure the key matches in create()
+    this.load.image('player', 'sprites/player/Ships/blue-1.png'); // Load player sprite
+    // Ensure the key matches in create()
   }
 
   create() {
     // Add background scene
-    const layer = this.add.layer();
-    
+    const background = this.scene.add('BackgroundScene', BackgroundScene, true);
+    this.scene.bringToTop();
+
     // Create player sprite
     this.player = this.physics.add.sprite(400, 300, 'player'); // Create player sprite directly
-    
-    this.scene.add('BackgroundScene', BackgroundScene, true);
-  
-    
+
+    // Make the sprite bigger
+    this.player.setScale(1.5); // Scale the sprite to twice its size
+
     // Define cursor keys for arrow key movement
     this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -30,8 +32,6 @@ class PhaserGame extends Phaser.Scene {
   }
 
   update() {
-
-
     if (this.canMoveSprite) {
       this.player.setVelocity(0); // Reset velocity
 

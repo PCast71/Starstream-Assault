@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Phaser from 'phaser';
 import PhaserGame from './PhaserGame'; // Adjust the path as necessary
+import BackgroundScene from './BackgroundScene'
 
 let game;
 
@@ -12,7 +13,7 @@ const PhaserGameComponent = () => {
         type: Phaser.AUTO,
         width: 800,
         height: 600,
-        scene: PhaserGame,
+        scene: [PhaserGame],
         parent: 'phaser-game-container', // Ensure Phaser is rendered within the div
         physics: {
           default: 'arcade',

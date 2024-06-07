@@ -1,32 +1,34 @@
+const express = require('express');
 const bcrypt = require('bcryptjs');
-const jwt = require('jswonwebtoken');
-const { check, validationResult } = requiure('express-validator');
+const jwt = require('jsonwebtoken');
+const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
 
+const authRoute = express.Router(); // Define a router instance
 
-exports.signUp = [
+// Define route handlers
+
+authRoute.post('/signup', [
     check('username', 'Username is required').not().isEmpty(),
-    check('password', 'Password is required').isLength({ min: 6 }),
+    check('password', 'Password is required and must be at least 6 characters long').isLength({ min: 6 }),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
-// router.post('/signup', authController.signUp);
-router.post('/signin', authController.signIn);
-
-
         const { username, password } = req.body;
 
         try {
             let user = await User.findOne({ username });
             if (user) { 
-                return res.status(400).json({ msg: "user already exists" });
+                return res.status(400).json({ msg: "User already exists" });
             }
-            user = new User({ username, password });
 
-            const salt = await bcrypt.hash(password, salt);
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            user = new User({ username, password: hashedPassword });
 
             await user.save();
             const payload = {
@@ -41,15 +43,15 @@ router.post('/signin', authController.signIn);
             });
         } catch (err) {
             console.error(err.message);
-            res.status(500).send('server error');
+            res.status(500).send('Server error');
         }
     }
-];
+]);
 
-exports.signIn = [
-    check('username', 'username is required').not().isEmpty(),
-    check('password', 'password is required').exists(),
-    async (req,res) => {
+authRoute.post('/signin', [
+    check('username', 'Username is required').not().isEmpty(),
+    check('password', 'Password is required').exists(),
+    async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -60,12 +62,12 @@ exports.signIn = [
         try {
             let user = await User.findOne({ username });
             if (!user) {
-                return res.status(400).json({ msg: 'invalid credentials' });
+                return res.status(400).json({ msg: 'Invalid credentials' });
             }
 
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) { 
-                return res.status(400).json({ msg: 'invalid credentials' })
+                return res.status(400).json({ msg: 'Invalid credentials' });
             }
 
             const payload = {
@@ -80,7 +82,9 @@ exports.signIn = [
             });
         } catch (err) {
             console.error(err.message);
-            res.status(500).send('server error');
+            res.status(500).send('Server error');
         }
     }
-];
+]);
+
+module.exports = authRoute; // Export the router instance

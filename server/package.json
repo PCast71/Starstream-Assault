@@ -11,8 +11,12 @@
     "author": "Lorenzo, Brenner, Patrick",
     "license": "MIT",
     "dependencies": {
+        "apollo-server-express": "^3.13.0",
+        "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
         "express": "^4.17.1",
+        "express-validator": "^7.1.0",
+        "http-proxy-middleware": "^3.0.0",
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^5.13.7"
     }
