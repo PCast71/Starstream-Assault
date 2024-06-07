@@ -1,14 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import PhaserGame from "./components/Game/PhaserGame";
-<<<<<<< HEAD
-import phaserConfig from './components/Game/PhaserConfig'; 
+import PhaserConfig from './components/Game/PhaserConfig'; 
 import BackgroundScene from './components/Game/BackgroundScene'
 // Import the configuration object
-=======
-import phaserConfig from './components/Game/PhaserConfig'; // Import the configuration object
-import { AuthProvider } from './AuthContext';
->>>>>>> main
 import './App.css';
 
 function App() {
@@ -18,7 +13,7 @@ function App() {
   useEffect(() => {
     if (phaserRef.current) {
       const config = {
-        ...phaserConfig,
+        ...PhaserConfig,
         parent: phaserRef.current,
         scene: [new PhaserGame()], // Make sure to instantiate the scene
       };
