@@ -1,7 +1,6 @@
 import React from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { useLocation, useHistory } from 'react-router-dom';
-import './Leaderboard.css';
 
 const GET_LEADERBOARD = gql`
   query GetLeaderboard {

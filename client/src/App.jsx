@@ -1,9 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import PhaserGame from "./components/Game/PhaserGame";
+<<<<<<< HEAD
 import phaserConfig from './components/Game/PhaserConfig'; 
 import BackgroundScene from './components/Game/BackgroundScene'
 // Import the configuration object
+=======
+import phaserConfig from './components/Game/PhaserConfig'; // Import the configuration object
+import { AuthProvider } from './AuthContext';
+>>>>>>> main
 import './App.css';
 
 function App() {

@@ -1,50 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../AuthContext';
 
 const SignIn = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
-    
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const response = await fetch('/sign-in', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-        const result = await response.json();
-        if (result.success) {
-            setMessage('Sign-in successful');
-        } else {
-            setMessage('Sign-in failed: ' + result.message);
-        }
-    };
-    
-    return (
-        <div className="container">
-            <h2>Sign In</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <button type="submit">Sign In</button>
-            </form>
-            {message && <p>{message}</p>}
-        </div>
-    )
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const { setAuth } = useContext(AuthContext);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('/api/auth/signin', { username, password });
+      setAuth(res.data.token); // Set the auth state with the token
+    } catch (err) {
+      console.error(err.response.data);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Username:</label>
+        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+      </div>
+      <div>
+        <label>Password:</label>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      </div>
+      <button type="submit">Sign In</button>
+    </form>
+  );
 };
 
 export default SignIn;
