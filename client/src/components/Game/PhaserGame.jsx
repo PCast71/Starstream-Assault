@@ -15,8 +15,8 @@ class PhaserGame extends Phaser.Scene {
 
   create() {
     // Add background scene
-    this.scene.add('BackgroundScene', BackgroundScene, true);
- 
+    const layer = this.add.layer();
+    
     // Create player sprite
     this.player = this.physics.add.sprite(400, 300, 'player'); // Create player sprite directly
 
@@ -24,6 +24,11 @@ class PhaserGame extends Phaser.Scene {
     this.enemy = this.physics.add.sprite(1420, 400, 'enemy');
 
     this.enemy.setVelocityX(900);
+
+    
+    this.scene.add('BackgroundScene', BackgroundScene, true);
+    this.scene.bringToTop();
+    
 
     // Define cursor keys for arrow key movement
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -41,6 +46,8 @@ class PhaserGame extends Phaser.Scene {
   }
 
   update() {
+
+
     if (this.canMoveSprite) {
       this.player.setVelocity(0); // Reset velocity
 
