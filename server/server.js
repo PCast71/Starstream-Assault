@@ -1,6 +1,7 @@
 const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
 // const mongoose = require('mongoose');
-const cors = require('cors');
+//const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware'); // Importing http-proxy-middleware
 const db = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -8,6 +9,10 @@ const leaderboardRoutes = require('./routes/leaderboardRoutes');
 const graphqlServer = require('./graphql');
 
 const app = express();
+
+// Apollo server setup
+const server = new ApolloServer({ typeDefs, resolvers });
+server.applyMiddleware({ app });
 
 // Middleware handling
 app.use(cors());
