@@ -64,6 +64,7 @@ class BackgroundScene extends Phaser.Scene {
       volume: 0.3, // Adjust volume
     });
     this.music1.play();
+    
   }
 
   // Method to handle boss death
