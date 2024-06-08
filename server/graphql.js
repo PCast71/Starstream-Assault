@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server-express');
+
 const mongoose = require('mongoose');
 
 // Defining Schema
@@ -19,6 +20,28 @@ const typeDefs = gql`
 `;
 
 // Defining Resolvers
+
+const { Score } = require('./models/Score'); // Adjust the path accordingly
+
+// Defining Schema
+const typeDefs = gql`
+    type Score {
+        id: ID!
+        username: String!
+        score: Int!
+    }
+
+    type Query {
+        leaderboard: [Score]
+    }
+
+    type Mutation {
+        addScore(username: String!, score: Int!): Score
+    }
+`;
+
+// Defining resolvers
+
 const resolvers = {
   Query: {
     leaderboard: async () => {
@@ -33,6 +56,7 @@ const resolvers = {
   },
 };
 
+
 // MongoDB Model
 const Score = mongoose.model('Score', new mongoose.Schema({
   username: String,
@@ -40,7 +64,6 @@ const Score = mongoose.model('Score', new mongoose.Schema({
 }));
 
 // Apollo Server
+
 const server = new ApolloServer({ typeDefs, resolvers });
 module.exports = server;
-
-// Created graphql.js to handle leaderboard scores
