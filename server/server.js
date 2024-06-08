@@ -1,15 +1,25 @@
 const express = require('express');
-const cors = require('cors');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const authRoute = require('./routes/authRoutes');
-const leaderboardRoutes = require('./routes/leaderboardRoutes');
+
 const { ApolloServer } = require('apollo-server-express');
-// const { typeDefs, resolvers } = require('./graphql');
-const authMiddleware = require('./middleware/authMiddleware');
+
+const { createProxyMiddleware } = require('http-proxy-middleware'); // Importing http-proxy-middleware
 const db = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
+
+const cors = require('cors');
+
+const leaderboardRoutes = require('./routes/leaderboardRoutes');
+
+
+const authMiddleware = require('./middleware/authMiddleware');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Apollo server setup
+const server = new ApolloServer({ typeDefs, resolvers });
+server.applyMiddleware({ app });
 
 // Middleware handling
 app.use(cors());

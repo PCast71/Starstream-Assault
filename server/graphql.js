@@ -1,4 +1,26 @@
 const { ApolloServer, gql } = require('apollo-server-express');
+
+const mongoose = require('mongoose');
+
+// Defining Schema
+const typeDefs = gql`
+  type Score {
+    id: ID!
+    username: String!
+    score: Int!
+  }
+
+  type Query {
+    leaderboard: [Score]
+  }
+
+  type Mutation {
+    addScore(username: String!, score: Int!): Score
+  }
+`;
+
+// Defining Resolvers
+
 const { Score } = require('./models/Score'); // Adjust the path accordingly
 
 // Defining Schema
@@ -19,20 +41,29 @@ const typeDefs = gql`
 `;
 
 // Defining resolvers
+
 const resolvers = {
-    Query: {
-        leaderboard: async () => {
-            return await Score.find().sort({ score: -1 }).limit(10);
-        },
+  Query: {
+    leaderboard: async () => {
+      return await Score.find().sort({ score: -1 }).limit(10);
     },
-    Mutation: {
-        addScore: async (_, { username, score }) => {
-            const newScore = new Score({ username, score });
-            return await newScore.save();
-        },
+  },
+  Mutation: {
+    addScore: async (_, { username, score }) => {
+      const newScore = new Score({ username, score });
+      return await newScore.save();
     },
+  },
 };
 
-// Apollo server
+
+// MongoDB Model
+const Score = mongoose.model('Score', new mongoose.Schema({
+  username: String,
+  score: Number,
+}));
+
+// Apollo Server
+
 const server = new ApolloServer({ typeDefs, resolvers });
 module.exports = server;
