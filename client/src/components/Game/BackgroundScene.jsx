@@ -11,6 +11,7 @@ class BackgroundScene extends Phaser.Scene {
     this.load.image('nebula1', 'sprites/background/nebula_a_purple.png');
     this.load.image('nebula2', 'sprites/background/nebula_c_blue.png');
     this.load.image('nebula3', 'sprites/background/nebula_b_red.png');
+    this.load.image('planet', 'sprites/background/planet_green.png');
 
     // Music tracks
     this.load.audio('backgroundMusic1', 'sprites/background/14. Accident Road.mp3');
@@ -23,111 +24,64 @@ class BackgroundScene extends Phaser.Scene {
     const gameWidth = 1400;
     const gameHeight = 800;
 
-    // Create nebulas group
-    this.nebulas = this.add.group();
-    
-    // Add background image as tile sprite
+    // Add background tile sprite
     this.background1 = this.add.tileSprite(gameWidth / 2, gameHeight / 2, gameWidth, gameHeight, 'background1');
-    this.background1.setScrollFactor(0); // Make background static
-    this.background1.setDepth(0); // Set depth for background
-    
+
+    // Add nebula images with parallax effect
+    this.nebula1 = this.add.image(gameWidth / 2, gameHeight / 2, 'nebula1');
+    this.nebula1.setDisplaySize(gameWidth, gameHeight);
+    this.nebula1.setAlpha(0.2); // Adjust opacity
+
+    this.nebula2 = this.add.image(gameWidth / 2, gameHeight / 2, 'nebula2');
+    this.nebula2.setDisplaySize(gameWidth, gameHeight);
+    this.nebula2.setAlpha(0.2); // Adjust opacity
+
+    this.nebula3 = this.add.image(gameWidth / 2, gameHeight / 2, 'nebula3');
+    this.nebula3.setDisplaySize(gameWidth, gameHeight);
+    this.nebula3.setAlpha(0.2); // Adjust opacity
+
+    // Set up camera properties for parallax effect
+    this.cameras.main.setBounds(0, 0, gameWidth * 2, gameHeight);
+    this.cameras.main.startFollow(this.background1);
+    this.cameras.main.setZoom(1);
+
+    // Add a shiny planet in the background
+    this.planet = this.add.image(gameWidth * 0.8, gameHeight * 0.5, 'planet');
+    this.planet.setDisplaySize(800, 800); // Make the planet big
+    this.planet.setTint(0x0000ff); // Add a glowing effect
+    this.planet.setAlpha(0.05); // Adjust opacity to make it look distant
+
+    // Create a specular highlight for the planet
+    const shine = this.add.image(this.planet.x, this.planet.y, 'planet');
+    shine.setDisplaySize(800, 800);
+    shine.setTint(0x70a3cc);
+    shine.setAlpha(0.5); // Adjust opacity to blend with the planet
+    shine.setBlendMode(Phaser.BlendModes.ADD); // Set blend mode to add for shine effect
+
     // Add and play the first background music
     this.music1 = this.sound.add('backgroundMusic1', {
-      loop: false,
-      volume: 0.5,
+      loop: true,
+      volume: 0.3, // Adjust volume
     });
-
-    // Add the second background music (boss music)
-    this.music2 = this.sound.add('backgroundMusic2', {
-      loop: true, // Loop until the boss is defeated
-      volume: 0,
-    });
-
-    // Add the game over sound
-    this.gameOverSound = this.sound.add('gameOverSound', {
-      loop: false,
-      volume: 0.5,
-    });
-
-    // Play the first music track
     this.music1.play();
-
-    // Set a timer to transition the music tracks after 1 minute and 30 seconds
-    this.time.delayedCall(90000, this.transitionToBossMusic, [], this); // 90000ms = 1.5 minutes
-
-    // Create nebulas
-    for (let i = 0; i < 5; i++) {
-      const nebula = this.nebulas.create(
-        Phaser.Math.Between(0, gameWidth),
-        Phaser.Math.Between(0, gameHeight),
-        'nebula' + Phaser.Math.Between(1, 3)
-      );
-      nebula.speed = Phaser.Math.FloatBetween(0.1, 0.5);
-      nebula.setDepth(1); // Set depth for nebulas
-    }
   }
 
-  transitionToBossMusic() {
-    // Start playing the boss music
-    this.music2.play();
+  // Method to handle boss death
+  handleBossDeath() {
+    // Stop the boss battle music
+    this.music2.stop();
 
-    // Create a fade effect for both tracks over 4 seconds
-    const fadeDuration = 4000;
-    const fadeStep = 100; // How often to update the volume (in ms)
-    const fadeSteps = fadeDuration / fadeStep;
-    let currentStep = 0;
+    // Play the game over sound
+    this.gameOverSound.play();
 
-    this.time.addEvent({
-      delay: fadeStep,
-      repeat: fadeSteps - 1,
-      callback: () => {
-        currentStep++;
-        this.music1.setVolume(0.5 - (currentStep * 0.5 / fadeSteps));
-        this.music2.setVolume(currentStep * 0.5 / fadeSteps);
-      },
-    });
-
-    // Stop the first track after fading out
-    this.time.delayedCall(fadeDuration, () => {
-      this.music1.stop();
-    });
-  }
-
-  // Call this method when the boss is defeated
-  onBossDefeated() {
-    // Fade out the boss music and play the game over sound
-    const fadeDuration = 4000;
-    const fadeStep = 100; // How often to update the volume (in ms)
-    const fadeSteps = fadeDuration / fadeStep;
-    let currentStep = 0;
-
-    this.time.addEvent({
-      delay: fadeStep,
-      repeat: fadeSteps - 1,
-      callback: () => {
-        currentStep++;
-        this.music2.setVolume(0.5 - (currentStep * 0.5 / fadeSteps));
-      },
-    });
-
-    this.time.delayedCall(fadeDuration, () => {
-      this.music2.stop();
-      this.gameOverSound.play();
-    });
+    // Transition to game over scene or perform any other game over logic
+    // Example:
+    // this.scene.start('GameOverScene');
   }
 
   update() {
-    // Move the background to the left
-    this.background1.tilePositionX += 1.5; // Adjust the velocity as needed
-
-    // Update nebulas' positions
-    this.nebulas.children.iterate(nebula => {
-      nebula.x -= nebula.speed;
-      if (nebula.x < -nebula.width) {
-        nebula.x = this.scale.width;
-        nebula.y = Phaser.Math.Between(0, this.scale.height);
-      }
-    });
+    this.background1.tilePositionX = this.cameras.main.scrollX * 0.1;
+    this.background1.tilePositionY = this.cameras.main.scrollY * 0.1;
   }
 }
 
