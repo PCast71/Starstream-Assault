@@ -29,27 +29,20 @@ class BackgroundScene extends Phaser.Scene {
 
     // Add nebula images with parallax effect
     this.nebula1 = this.add.image(gameWidth / 2, gameHeight / 2, 'nebula1');
-    this.nebula1.setDisplaySize(gameWidth, gameHeight);
-    this.nebula1.setAlpha(0.2); // Adjust opacity
+    this.nebula1.setScrollFactor(0.3); // Adjust scroll factor for parallax effect
 
     this.nebula2 = this.add.image(gameWidth / 2, gameHeight / 2, 'nebula2');
-    this.nebula2.setDisplaySize(gameWidth, gameHeight);
-    this.nebula2.setAlpha(0.2); // Adjust opacity
+    this.nebula2.setScrollFactor(0.2); // Adjust scroll factor for parallax effect
 
     this.nebula3 = this.add.image(gameWidth / 2, gameHeight / 2, 'nebula3');
-    this.nebula3.setDisplaySize(gameWidth, gameHeight);
-    this.nebula3.setAlpha(0.2); // Adjust opacity
-
-    // Set up camera properties for parallax effect
-    this.cameras.main.setBounds(0, 0, gameWidth * 2, gameHeight);
-    this.cameras.main.startFollow(this.background1);
-    this.cameras.main.setZoom(1);
+    this.nebula3.setScrollFactor(0.1); // Adjust scroll factor for parallax effect
 
     // Add a shiny planet in the background
     this.planet = this.add.image(gameWidth * 0.8, gameHeight * 0.5, 'planet');
     this.planet.setDisplaySize(800, 800); // Make the planet big
     this.planet.setTint(0x0000ff); // Add a glowing effect
     this.planet.setAlpha(0.05); // Adjust opacity to make it look distant
+    this.planet.setScrollFactor(0); // Ensure the planet doesn't scroll with the camera
 
     // Create a specular highlight for the planet
     const shine = this.add.image(this.planet.x, this.planet.y, 'planet');
@@ -57,6 +50,7 @@ class BackgroundScene extends Phaser.Scene {
     shine.setTint(0x70a3cc);
     shine.setAlpha(0.5); // Adjust opacity to blend with the planet
     shine.setBlendMode(Phaser.BlendModes.ADD); // Set blend mode to add for shine effect
+    shine.setScrollFactor(0); // Ensure the shine doesn't scroll with the camera
 
     // Add and play the first background music
     this.music1 = this.sound.add('backgroundMusic1', {
@@ -64,7 +58,6 @@ class BackgroundScene extends Phaser.Scene {
       volume: 0.3, // Adjust volume
     });
     this.music1.play();
-    
   }
 
   // Method to handle boss death
@@ -87,8 +80,8 @@ class BackgroundScene extends Phaser.Scene {
   update() {
     // Ensure this.background1 is defined
     if (this.background1) {
-      this.background1.tilePositionX = this.cameras.main.scrollX * 0.1;
-      this.background1.tilePositionY = this.cameras.main.scrollY * 0.1;
+      this.background1.tilePositionX += 0.4; // Adjust horizontal scroll speed
+      this.background1.tilePositionY += 0.4; // Adjust vertical scroll speed
     }
   }
 }
