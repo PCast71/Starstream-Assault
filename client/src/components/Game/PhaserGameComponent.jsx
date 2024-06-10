@@ -1,33 +1,35 @@
 import React, { useEffect } from 'react';
 import Phaser from 'phaser';
-import {PhaserGame,createPhaserGame} from './PhaserGame'; // Adjust the path as necessary
-import BackgroundScene from './BackgroundScene';
+import PhaserGame from './PhaserGame'; // Ensure correct import path
 
 const PhaserGameComponent = () => {
   useEffect(() => {
-    // Check if the game already exists
-    if (!window.game) {
-      window.game = new Phaser.Game({
-        type: Phaser.AUTO,
-        width: 800,
-        height: 600,
-        scene: [PhaserGame],
-        parent: 'phaser-game-container', // Ensure Phaser is rendered within the div
-        physics: {
-          default: 'arcade',
-          arcade: {
-            debug: false, // Set to true if you want to see physics bodies for debugging
-          },
+    // Create the Phaser game instance
+    const game = new Phaser.Game({
+      type: Phaser.AUTO,
+      width: window.innerWidth,
+      height: window.innerHeight,
+      scene: [PhaserGame],
+      parent: 'phaser-game-container', // Ensure Phaser is rendered within the div
+      physics: {
+        default: 'arcade',
+        arcade: {
+          debug: false, // Set to true if you want to see physics bodies for debugging
         },
-      });
-    }
+      },
+    });
+
+    // Resize the game when the window is resized
+    const resize = () => {
+      game.scale.resize(window.innerWidth, window.innerHeight);
+    };
+
+    window.addEventListener('resize', resize);
 
     // Cleanup function to destroy the game instance on component unmount
     return () => {
-      if (window.game) {
-        window.game.destroy(true);
-        window.game = null;
-      }
+      window.removeEventListener('resize', resize);
+      game.destroy(true);
     };
   }, []);
 
