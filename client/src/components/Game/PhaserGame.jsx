@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import BackgroundScene from './BackgroundScene';
 import CollisionScene from './CollisionScene';
+
 class PhaserGame extends Phaser.Scene {
   constructor() {
     super({ key: 'main' });
@@ -11,7 +12,7 @@ class PhaserGame extends Phaser.Scene {
 
   preload() {
     // Load assets
- this.load.image('player', '/sprites/player/Ships/blue-1.png');
+    this.load.image('player', '/sprites/player/Ships/blue-1.png');
     this.load.image('projectile', '/sprites/player/Projectiles/missile-2.png');
     this.load.image('enemy1', '/sprites/player/Ships/Enemies/Enemies-1.png');
     this.load.image('enemy2', '/sprites/player/Ships/Enemies/Enemies-4.png');
@@ -20,34 +21,15 @@ class PhaserGame extends Phaser.Scene {
   }
 
   create() {
-    // Add background scene
-    this.scene.add('BackgroundScene', BackgroundScene, true);
-    this.scene.bringToTop('main');
-
-    // Create player sprite
-    this.player = this.physics.add.sprite(400, 300, 'player');
-    this.player.setScale(1.5);
-
-    // Create enemy sprite
-    this.enemy = this.physics.add.sprite(800, 300, 'enemy');
-    this.setRandomVelocity(this.enemy);
-
-    // Define cursor keys for movement
-
-   
-  }
-
-  create() {
     // Add scenes
     this.scene.add('BackgroundScene', BackgroundScene, true);
     this.scene.add('CollisionScene', CollisionScene, true);
-    this.scene.bringToTop();
+    this.scene.bringToTop('main');
 
     // Create player sprite
     this.player = this.physics.add.sprite(400, 300, 'player').setScale(1.5);
 
     // Define controls
-
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keys = this.input.keyboard.addKeys('W,A,S,D');
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -57,12 +39,6 @@ class PhaserGame extends Phaser.Scene {
       classType: Phaser.Physics.Arcade.Image,
       maxSize: 10000,
     });
-
-
-    this.time.addEvent({
-      delay: 2000, // 2 seconds
-      callback: () => this.setRandomVelocity(this.enemy),
-      loop: true
 
     this.physics.world.enable(this.projectiles);
 
@@ -82,7 +58,6 @@ class PhaserGame extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 23 }),
       frameRate: 20,
       hideOnComplete: true,
-
     });
 
     // Spawn random enemies
@@ -90,7 +65,6 @@ class PhaserGame extends Phaser.Scene {
   }
 
   update() {
-
     if (this.canMoveSprite) {
       this.handlePlayerMovement();
       if (Phaser.Input.Keyboard.JustDown(this.spacebar) && this.canShoot) {
@@ -98,27 +72,8 @@ class PhaserGame extends Phaser.Scene {
         this.canShoot = false;
         this.time.delayedCall(100, () => { this.canShoot = true; });
       }
-
-    // Movement and shooting logic
-    this.player.setVelocity(0);
-
-    if (this.cursors.left.isDown) this.player.setVelocityX(-100);
-    if (this.cursors.right.isDown) this.player.setVelocityX(100);
-    if (this.cursors.up.isDown) this.player.setVelocityY(-100);
-    if (this.cursors.down.isDown) this.player.setVelocityY(100);
-    if (this.keys.A.isDown) this.player.setVelocityX(-100);
-    if (this.keys.D.isDown) this.player.setVelocityX(100);
-    if (this.keys.W.isDown) this.player.setVelocityY(-100);
-    if (this.keys.S.isDown) this.player.setVelocityY(100);
-
-    if (Phaser.Input.Keyboard.JustDown(this.spacebar) && this.canShoot) {
-      this.shootProjectile();
-      this.canShoot = false;
-      this.time.delayedCall(100, () => { this.canShoot = true; });
-
     }
   }
-
 
   handlePlayerMovement() {
     this.player.setVelocity(0); // Reset velocity
@@ -144,8 +99,6 @@ class PhaserGame extends Phaser.Scene {
     }
   }
 
-
-
   shootProjectile() {
     const projectile = this.projectiles.get(this.player.x, this.player.y, 'projectile');
     if (projectile) {
@@ -154,20 +107,12 @@ class PhaserGame extends Phaser.Scene {
       projectile.body.velocity.x = 300;
       projectile.angle = 90;
     }
-  }
-
-
-  setRandomVelocity(sprite) {
-    const minVelocity = -100;
-    const maxVelocity = 100;
-    const randomXVelocity = Phaser.Math.Between(minVelocity, maxVelocity);
-    const randomYVelocity = Phaser.Math.Between(minVelocity, maxVelocity);
-    sprite.setVelocity(randomXVelocity, randomYVelocity);
+  }s
 
   handleCollision(player, enemy) {
     player.setActive(false).setVisible(false);
     enemy.setActive(false).setVisible(false);
-    
+
     // Add explosion effect
     this.addExplosion(player.x, player.y);
     this.addExplosion(enemy.x, enemy.y);
@@ -192,7 +137,7 @@ class PhaserGame extends Phaser.Scene {
       // Remove enemy from the scene
       this.enemies.remove(enemy);
     }
-}
+  }
 
   addExplosion(x, y) {
     const explosion = this.add.sprite(x, y, 'explosion');
@@ -241,7 +186,6 @@ class PhaserGame extends Phaser.Scene {
       const randomYVelocity = Phaser.Math.Between(minVelocity, maxVelocity);
       sprite.setVelocity(randomXVelocity, randomYVelocity);
     }
-
   }
 }
 
