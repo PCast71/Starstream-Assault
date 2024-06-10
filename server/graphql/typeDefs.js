@@ -3,26 +3,16 @@ const { gql } = require('apollo-server-express');
 const typeDefs = gql`
   type Player {
     id: ID!
-    name: String!
+    username: String!
     score: Int!
   }
 
-  type GameState {
-    id: ID!
-    status: String!
-    players: [Player]!
-  }
-
   type Query {
-    players: [Player]
-    gameState: GameState
+    leaderboard: [Player]
   }
 
   type Mutation {
-    addPlayer(name: String!): Player
-    updateScore(id: ID!, score: Int!): Player
-    startGame: GameState
-    endGame: GameState
+    addScore(username: String!, score: Int!): Player
   }
 `;
 

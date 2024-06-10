@@ -1,39 +1,19 @@
-const players = [];
-let gameState = {
-  id: '1',
-  status: 'NOT_STARTED',
-  players: []
-};
+const leaderboard = [
+  { id: '1', username: 'Player1', score: 100 },
+  { id: '2', username: 'Player2', score: 80 },
+];
 
 const resolvers = {
   Query: {
-    players: () => players,
-    gameState: () => gameState
+    leaderboard: () => leaderboard,
   },
   Mutation: {
-    addPlayer: (_, { name }) => {
-      const player = { id: `${players.length + 1}`, name, score: 0 };
-      players.push(player);
-      gameState.players.push(player);
-      return player;
+    addScore: (parent, args) => {
+      const newPlayer = { id: String(leaderboard.length + 1), username: args.username, score: args.score };
+      leaderboard.push(newPlayer);
+      return newPlayer;
     },
-    updateScore: (_, { id, score }) => {
-      const player = players.find(p => p.id === id);
-      if (player) {
-        player.score = score;
-        return player;
-      }
-      throw new Error('Player not found');
-    },
-    startGame: () => {
-      gameState.status = 'IN_PROGRESS';
-      return gameState;
-    },
-    endGame: () => {
-      gameState.status = 'ENDED';
-      return gameState;
-    }
-  }
+  },
 };
 
 module.exports = resolvers;
