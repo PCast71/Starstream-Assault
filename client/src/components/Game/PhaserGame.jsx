@@ -18,6 +18,9 @@ class PhaserGame extends Phaser.Scene {
     this.load.image('enemy2', '/sprites/player/Ships/Enemies/Enemies-4.png');
     this.load.image('enemy3', '/sprites/player/Ships/Enemies/Enemies-6.png');
     this.load.spritesheet('explosion', '/sprites/player/Explosion/explosion.png', { frameWidth: 64, frameHeight: 64 });
+    this.load.image('boss', '/sprites/player/Ships/Enemies/Enemies-6b.png');
+    this.load.image('bossProjectile', '/sprites/player/Projectiles/missile-2.png');
+    this.load.image('bossProjectile2', '/sprites/player/Projectiles/projectile01-5.png');
   }
 
   create() {
@@ -62,6 +65,9 @@ class PhaserGame extends Phaser.Scene {
 
     // Spawn random enemies
     this.spawnEnemies();
+
+    // Spawn boss after a delay 
+    this.time.delayedCall(50000, this.spawnBoss, [], this); // Change the delay as needed
   }
 
   update() {
@@ -185,6 +191,132 @@ class PhaserGame extends Phaser.Scene {
       const randomXVelocity = Phaser.Math.Between(minVelocity, maxVelocity);
       const randomYVelocity = Phaser.Math.Between(minVelocity, maxVelocity);
       sprite.setVelocity(randomXVelocity, randomYVelocity);
+    }
+  }
+
+  spawnBoss() {
+    this.boss = this.physics.add.sprite(400, 50, 'boss'); // Spawn at the top
+    this.boss.setScale(3);
+    this.boss.setVelocity(0, 100); // Move down initially
+    this.boss.health = 500;
+
+    // Create boss projectiles
+    this.bossProjectiles = this.physics.add.group({ 
+      classType: Phaser.Physics.Arcade.Image,
+      maxSize: 100,
+      runChildUpdate: true,
+    });
+
+    this.bossProjectiles2 = this.physics.add.group({
+      classType: Phaser.Physics.Arcade.Image,
+      maxSize: 100,
+      runChildUpdate: true,
+    });
+
+    this.physics.world.enable(this.bossProjectiles);
+    this.physics.world.enable(this.bossProjectiles2);
+
+    // Boss shooting 
+    this.bossShootEvent1 = this.time.addEvent({
+      delay: 1000,
+      callback: () => this.shootBossProjectile(),
+      loop: true
+    });
+
+    this.bossShootEvent2 = this.time.addEvent({
+      delay: 1500,
+      callback: () => this.shootBossProjectile2(),
+      loop: true
+    });
+
+    // Timer to change boss direction periodically within the right center of the screen
+    this.bossMoveEvent = this.time.addEvent({
+      delay: 2000,
+      callback: () => this.setBossRandomVelocity(),
+      loop: true,
+      callbackScope: this
+    });
+
+    // Collision detection for boss projectiles hitting the player
+    this.physics.add.overlap(this.bossProjectiles, this.player, this.handlePlayerHit, null, this);
+    this.physics.add.overlap(this.bossProjectiles2, this.player, this.handlePlayerHit, null, this);
+
+    // Collision detection for player projectiles hitting the boss
+    this.physics.add.overlap(this.projectiles, this.boss, this.handleBossHit, null, this);
+  }
+
+  setBossRandomVelocity() {
+    if (this.boss && this.boss.active) {
+      const minX = 600; // Constrain movement to the right side
+      const maxX = 800;
+      const minY = 100; // Constrain movement to the upper part of the screen
+      const maxY = 500;
+      const randomXVelocity = Phaser.Math.Between(-50, 50); // Control horizontal speed
+      const randomYVelocity = Phaser.Math.Between(-50, 50); // Control vertical speed
+
+      // Ensure the boss stays within the constrained area
+      const newX = Phaser.Math.Clamp(this.boss.x + randomXVelocity, minX, maxX);
+      const newY = Phaser.Math.Clamp(this.boss.y + randomYVelocity, minY, maxY);
+
+      this.boss.setVelocity(newX - this.boss.x, newY - this.boss.y);
+    }
+  }
+
+  shootBossProjectile() {
+    const projectile = this.bossProjectiles.get(this.boss.x, this.boss.y, 'bossProjectile');
+    if (projectile) {
+      projectile.setActive(true);
+      projectile.setVisible(true);
+      projectile.body.velocity.x = -300; // Move left
+      projectile.body.velocity.y = 0; // No vertical movement
+      projectile.angle = 270; // Rotate the projectile
+    }
+  }
+  
+  shootBossProjectile2() {
+    const projectile = this.bossProjectiles2.get(this.boss.x, this.boss.y, 'bossProjectile2');
+    if (projectile) {
+      projectile.setActive(true);
+      projectile.setVisible(true);
+      projectile.body.velocity.x = -300; // Move left
+      projectile.body.velocity.y = 0; // No vertical movement
+      projectile.angle = 270; // Rotate the projectile
+    }
+  }
+
+  handlePlayerHit(player, projectile) {
+    projectile.setActive(false).setVisible(false);
+    projectile.destroy();
+
+    // Handle player being hit by boss projectile
+    player.setActive(false).setVisible(false);
+
+    // Add explosion effect
+    this.addExplosion(player.x, player.y);
+
+    // Respawn player after delay
+    this.respawnPlayer();
+  }
+
+  handleBossHit(boss, projectile) {
+    projectile.setActive(false).setVisible(false);
+    projectile.destroy();
+  
+    boss.health -= 10; // Decrease boss health
+  
+    if (boss.health <= 0) {
+      boss.setActive(false).setVisible(false);
+  
+      // Add explosion effect
+      this.addExplosion(boss.x, boss.y);
+  
+      // Stop boss shooting events
+      this.bossShootEvent1.remove();
+      this.bossShootEvent2.remove();
+      this.bossMoveEvent.remove();
+  
+      // Remove boss from the scene
+      this.physics.world.remove(boss);
     }
   }
 }
