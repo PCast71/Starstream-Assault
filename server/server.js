@@ -19,32 +19,42 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files (sprites)
-app.use(express.static('public'));
+app.use('/sprites', express.static('public/sprites'));
 
 // Set up proxy for backend API
-app.use('/api', createProxyMiddleware({ target: 'http://localhost:5001', changeOrigin: true }));
+app.use('/api', createProxyMiddleware({
+  target: 'http://localhost:5001',
+  changeOrigin: true,
+  onError: function(err, req, res) {
+    console.error('Proxy Error:', err);
+    res.status(500).send('Proxy Error');
+  }
+}));
 
 // Establishing routes
 app.use('/api/auth', authRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 
 async function startServer() {
-  // Connect to the database
-  await connectDB();
+  try {
+    // Connect to the database
+    await connectDB();
+    console.log('Connected to the database');
 
-  // Apollo server setup
-  const server = new ApolloServer({ typeDefs, resolvers, context: authMiddleware });
-  await server.start();
-  server.applyMiddleware({ app });
+    // Apollo server setup
+    const server = new ApolloServer({ typeDefs, resolvers, context: authMiddleware });
+    await server.start();
+    server.applyMiddleware({ app });
 
-  // Start the server only after the database connection is established
-  app.listen(PORT, () => {
-    console.log(`API server running on port ${PORT}!`);
-    console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
-  });
+    // Start the server only after the database connection is established
+    app.listen(PORT, () => {
+      console.log(`API server running on port ${PORT}!`);
+      console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+    });
+  } catch (err) {
+    console.error('Failed to start the server:', err);
+  }
 }
 
 // Start the Apollo Server
-startServer().catch(err => {
-  console.error('Failed to start the server:', err);
-});
+startServer();
