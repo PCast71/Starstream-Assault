@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,17 +11,28 @@ export default defineConfig({
       '/sprites': {
         target: 'http://localhost:5000',
         secure: false,
-        changeOrigin: true
+        changeOrigin: true,
       },
       '/graphql': {
         target: 'http://localhost:5000',
         secure: false,
-        changeOrigin: true
-      }
-    }
-  }, 
+        changeOrigin: true,
+      },
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          // Add more custom chunks as needed
+        },
+      },
+    },
+    chunkSizeWarningLimit: 2000, // Adjust the limit to a higher value (in kB)
+  },
   test: {
     environment: 'happy-dom',
-    globals: true
-  }
-})
+    globals: true,
+  },
+});

@@ -8,6 +8,7 @@ class PhaserGame extends Phaser.Scene {
     this.canMoveSprite = true;
     this.canShoot = true;
     this.playerRespawnDelay = 1000; // Adjust respawn delay as needed (in milliseconds)
+    this.score = 0; // Add score variable
   }
 
   preload() {
@@ -63,11 +64,14 @@ class PhaserGame extends Phaser.Scene {
       hideOnComplete: true,
     });
 
+    // Add score text
+    this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
+
     // Spawn random enemies
     this.spawnEnemies();
 
-    // Spawn boss after a delay 
-    this.time.delayedCall(50000, this.spawnBoss, [], this); // Change the delay as needed
+    // Spawn boss after a delay (e.g., 90 seconds)
+    this.time.delayedCall(7000, this.spawnBoss, [], this); // Change the delay as needed
   }
 
   update() {
@@ -142,6 +146,9 @@ class PhaserGame extends Phaser.Scene {
 
       // Remove enemy from the scene
       this.enemies.remove(enemy);
+
+      // Update score
+      this.updateScore(5); // Assume 5 points for small enemies
     }
   }
 
@@ -198,7 +205,7 @@ class PhaserGame extends Phaser.Scene {
     this.boss = this.physics.add.sprite(400, 50, 'boss'); // Spawn at the top
     this.boss.setScale(3);
     this.boss.setVelocity(0, 100); // Move down initially
-    this.boss.health = 500;
+    this.boss.health = 150;
 
     // Create boss projectiles
     this.bossProjectiles = this.physics.add.group({ 
@@ -269,10 +276,10 @@ class PhaserGame extends Phaser.Scene {
       projectile.setVisible(true);
       projectile.body.velocity.x = -300; // Move left
       projectile.body.velocity.y = 0; // No vertical movement
-      projectile.angle = 270; // Rotate the projectile
+      projectile.angle = 270; 
     }
   }
-  
+
   shootBossProjectile2() {
     const projectile = this.bossProjectiles2.get(this.boss.x, this.boss.y, 'bossProjectile2');
     if (projectile) {
@@ -280,7 +287,7 @@ class PhaserGame extends Phaser.Scene {
       projectile.setVisible(true);
       projectile.body.velocity.x = -300; // Move left
       projectile.body.velocity.y = 0; // No vertical movement
-      projectile.angle = 270; // Rotate the projectile
+      projectile.angle = 270; 
     }
   }
 
@@ -301,23 +308,51 @@ class PhaserGame extends Phaser.Scene {
   handleBossHit(boss, projectile) {
     projectile.setActive(false).setVisible(false);
     projectile.destroy();
-  
+
     boss.health -= 10; // Decrease boss health
-  
+
     if (boss.health <= 0) {
       boss.setActive(false).setVisible(false);
-  
+
       // Add explosion effect
       this.addExplosion(boss.x, boss.y);
-  
+
       // Stop boss shooting events
       this.bossShootEvent1.remove();
       this.bossShootEvent2.remove();
       this.bossMoveEvent.remove();
-  
+
       // Remove boss from the scene
       this.physics.world.remove(boss);
+
+      // Update score
+      this.updateScore(10); // Assume 10 points for the boss
+
+      // End game
+      this.endGame();
     }
+  }
+
+  updateScore(points) {
+    this.score += points;
+    this.scoreText.setText('Score: ' + this.score);
+  }
+
+  endGame() {
+    // Stop player movement
+    this.canMoveSprite = false;
+
+    // Display game over text
+    const gameOverText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Game Over... for now', {
+      fontSize: '64px',
+      fill: '#fff'
+    }).setOrigin(0.5);
+
+    // Create a semi-transparent background for the text
+    const background = this.add.graphics();
+    background.fillStyle(0x000000, 0.7); // Black with 70% opacity
+    background.fillRect(gameOverText.x - gameOverText.width / 2 - 20, gameOverText.y - gameOverText.height / 2 - 20, gameOverText.width + 40, gameOverText.height + 40);
+    background.setDepth(-1); // Ensure the background is behind the text
   }
 }
 
