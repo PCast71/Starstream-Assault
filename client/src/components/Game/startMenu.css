@@ -1,0 +1,37 @@
+/* src/StartMenu.css */
+.start-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: url('/path-to-your-background-image.jpg') no-repeat center center fixed;
+    background-size: cover;
+  }
+  
+  h1 {
+    color: #fff;
+    font-size: 4rem;
+    margin-bottom: 2rem;
+  }
+  
+  .buttons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  button {
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #555;
+  }
+  

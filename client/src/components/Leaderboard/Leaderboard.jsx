@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
 
 const GET_LEADERBOARD = gql`
   query GetLeaderboard {
@@ -24,27 +24,36 @@ const ADD_SCORE = gql`
 
 const Leaderboard = () => {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate(); // useNavigate instead of useHistory
   const { score } = location.state || { score: 0 };
   const { loading, error, data } = useQuery(GET_LEADERBOARD);
   const [addScore] = useMutation(ADD_SCORE);
+  const [username, setUsername] = useState('Player1'); // Initialize with default username
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (score) {
-      addScore({ variables: { username: 'Player1', score } });
+      addScore({ variables: { username, score } });
     }
-  }, [score, addScore]);
+  }, [score, username, addScore]);
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
   const restartGame = () => {
-    history.push('/game');
+    navigate('/game'); // use navigate instead of history.push
   };
 
   return (
     <div>
       <h1>Leaderboard</h1>
+      <label>
+        Username:
+        <input type="text" value={username} onChange={handleUsernameChange} />
+      </label>
       <ul>
         {data.leaderboard.map(({ id, username, score }) => (
           <li key={id}>
@@ -58,5 +67,3 @@ const Leaderboard = () => {
 };
 
 export default Leaderboard;
-
-// fetch and display high scores.

@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 import Phaser from 'phaser';
-import PhaserGame from './PhaserGame'; // Adjust the path as necessary
-import BackgroundScene from './BackgroundScene'
-
-let game;
+import {PhaserGame,createPhaserGame} from './PhaserGame'; // Adjust the path as necessary
+import BackgroundScene from './BackgroundScene';
 
 const PhaserGameComponent = () => {
   useEffect(() => {
     // Check if the game already exists
-    if (!game) {
-      game = new Phaser.Game({
+    if (!window.game) {
+      window.game = new Phaser.Game({
         type: Phaser.AUTO,
         width: 800,
         height: 600,
@@ -26,9 +24,9 @@ const PhaserGameComponent = () => {
 
     // Cleanup function to destroy the game instance on component unmount
     return () => {
-      if (game) {
-        game.destroy(true);
-        game = null;
+      if (window.game) {
+        window.game.destroy(true);
+        window.game = null;
       }
     };
   }, []);
