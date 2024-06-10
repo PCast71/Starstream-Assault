@@ -13,7 +13,7 @@ class BackgroundScene extends Phaser.Scene {
     this.load.image('nebula3', 'sprites/background/nebula_b_red.png');
     this.load.image('planet', 'sprites/background/planet_green.png');
 
-    // Music tracks - Ensure correct paths and file names
+    // Load music tracks - Ensure correct paths and file names
     this.load.audio('backgroundMusic1', 'sprites/background/14. Accident Road.mp3');
     this.load.audio('backgroundMusic2', 'sprites/background/18. Boss on Parade 4 MK II.mp3');
     this.load.audio('gameOverSound', 'sprites/background/21. Game Over.mp3');
@@ -64,20 +64,21 @@ class BackgroundScene extends Phaser.Scene {
       volume: 0.3, // Adjust volume
     });
     this.music1.play();
-    
+
+    // Add other audio tracks to the cache
+    this.music2 = this.sound.add('backgroundMusic2', { volume: 0.3 });
+    this.gameOverSound = this.sound.add('gameOverSound', { volume: 0.3 });
   }
 
   // Method to handle boss death
   handleBossDeath() {
-    // Stop the boss battle music - Ensure this.music2 is defined
+    // Stop the boss battle music
     if (this.music2) {
       this.music2.stop();
     }
 
-    // Play the game over sound - Ensure this.gameOverSound is defined
-    if (this.gameOverSound) {
-      this.gameOverSound.play();
-    }
+    // Play the game over sound
+    this.gameOverSound.play();
 
     // Transition to game over scene or perform any other game over logic
     // Example:
@@ -85,7 +86,7 @@ class BackgroundScene extends Phaser.Scene {
   }
 
   update() {
-    // Ensure this.background1 is defined
+    // Ensure background1 is defined
     if (this.background1) {
       this.background1.tilePositionX = this.cameras.main.scrollX * 0.1;
       this.background1.tilePositionY = this.cameras.main.scrollY * 0.1;

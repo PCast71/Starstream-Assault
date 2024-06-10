@@ -10,46 +10,34 @@ class PhaserGame extends Phaser.Scene {
 
   preload() {
     // Load assets
-    this.load.image('player', '/sprites/player/Ships/blue-1.png');
-    this.load.image('projectile', '/sprites/player/Projectiles/missile-2.png');
-    this.load.image('enemy', '/sprites/player/Ships/Enemies/Enemies-1.png');
+    this.load.image('player', 'sprites/player/Ships/blue-1.png');
+    this.load.image('projectile', 'sprites/player/Projectiles/missile-2.png');
+    this.load.image('enemy', 'sprites/player/Ships/Enemies/Enemies-1.png');
   }
 
   create() {
     // Add background scene
-    const background = this.scene.add('BackgroundScene', BackgroundScene, true);
-    this.scene.bringToTop();
+    this.scene.add('BackgroundScene', BackgroundScene, true);
+    this.scene.bringToTop('main');
 
     // Create player sprite
-    this.player = this.physics.add.sprite(400, 300, 'player'); // Create player sprite directly
+    this.player = this.physics.add.sprite(400, 300, 'player');
+    this.player.setScale(1.5);
 
-    // Make the sprite bigger
-    this.player.setScale(1.5); // Scale the sprite to twice its size
-    
-    // Create enemy sprite closer to the center of the screen
-    this.enemy = this.physics.add.sprite(800, 300, 'enemy'); // Adjusted position
-    
-    this.enemy.setVelocityX(900);
+    // Create enemy sprite
+    this.enemy = this.physics.add.sprite(800, 300, 'enemy');
+    this.setRandomVelocity(this.enemy);
 
-    // Define cursor keys for arrow key movement
+    // Define cursor keys for movement
     this.cursors = this.input.keyboard.createCursorKeys();
-
-    // Define WASD keys for movement
     this.keys = this.input.keyboard.addKeys('W,A,S,D');
-
-    // Define Spacebar for Projectile
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     // Create a group for projectiles
     this.projectiles = this.physics.add.group({
       classType: Phaser.Physics.Arcade.Image,
       maxSize: 10000,
-      runChildUpdate: true,
     });
-
-    this.physics.world.enable(this.projectiles); // Enable physics for projectiles
-
-    this.setRandomVelocity(this.enemy);
 
     this.time.addEvent({
       delay: 2000, // 2 seconds
@@ -60,39 +48,11 @@ class PhaserGame extends Phaser.Scene {
 
   update() {
     if (this.canMoveSprite) {
-      this.player.setVelocity(0); // Reset velocity
-
-      // Handle arrow key movement
-      if (this.cursors.left.isDown) {
-        this.player.setVelocityX(-100);
-      } else if (this.cursors.right.isDown) {
-        this.player.setVelocityX(100);
-      }
-
-      if (this.cursors.up.isDown) {
-        this.player.setVelocityY(-100);
-      } else if (this.cursors.down.isDown) {
-        this.player.setVelocityY(100);
-      }
-
-      // Handle WASD key movement
-      if (this.keys.A.isDown) {
-        this.player.setVelocityX(-100);
-      } else if (this.keys.D.isDown) {
-        this.player.setVelocityX(100);
-      }
-
-      if (this.keys.W.isDown) {
-        this.player.setVelocityY(-100);
-      } else if (this.keys.S.isDown) {
-        this.player.setVelocityY(100);
-      }
-
+      this.handlePlayerMovement();
       if (Phaser.Input.Keyboard.JustDown(this.spacebar) && this.canShoot) {
-        console.log("Shooting projectile"); // Log when shooting
         this.shootProjectile();
         this.canShoot = false;
-        this.time.delayedCall(100, () => { this.canShoot = true; console.log("Can shoot again"); }) // Log when cooldown is over
+        this.time.delayedCall(100, () => { this.canShoot = true; });
       }
     }
 
@@ -104,10 +64,32 @@ class PhaserGame extends Phaser.Scene {
     });
   }
 
-  // Shooting projectile
+  handlePlayerMovement() {
+    this.player.setVelocity(0); // Reset velocity
+
+    // Handle arrow key and WASD key movement
+    const moveKeys = {
+      left: this.cursors.left.isDown || this.keys.A.isDown,
+      right: this.cursors.right.isDown || this.keys.D.isDown,
+      up: this.cursors.up.isDown || this.keys.W.isDown,
+      down: this.cursors.down.isDown || this.keys.S.isDown,
+    };
+
+    if (moveKeys.left) {
+      this.player.setVelocityX(-100);
+    } else if (moveKeys.right) {
+      this.player.setVelocityX(100);
+    }
+
+    if (moveKeys.up) {
+      this.player.setVelocityY(-100);
+    } else if (moveKeys.down) {
+      this.player.setVelocityY(100);
+    }
+  }
+
   shootProjectile() {
     const projectile = this.projectiles.get(this.player.x, this.player.y, 'projectile');
-
     if (projectile) {
       projectile.setActive(true);
       projectile.setVisible(true);
@@ -116,17 +98,11 @@ class PhaserGame extends Phaser.Scene {
     }
   }
 
-  setCanMoveSprite(canMove) {
-    this.canMoveSprite = canMove;
-  }
-
   setRandomVelocity(sprite) {
     const minVelocity = -100;
     const maxVelocity = 100;
-
     const randomXVelocity = Phaser.Math.Between(minVelocity, maxVelocity);
     const randomYVelocity = Phaser.Math.Between(minVelocity, maxVelocity);
-
     sprite.setVelocity(randomXVelocity, randomYVelocity);
   }
 }
