@@ -1,35 +1,18 @@
-import React, { useEffect, useRef } from 'react';
-import Phaser from 'phaser';
-import PhaserConfig from './components/Game/PhaserConfig';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import StartMenu from './components/Game/StartMenu';
+import LeaderBoard from './components/Leaderboard/Leaderboard';
+import PhaserGame from './components/Game/PhaserGame'; // Import PhaserGame as a regular component
 
 function App() {
-  const phaserRef = useRef(null);
-  const gameInstance = useRef(null); // To store the Phaser game instance
-
-  useEffect(() => {
-    if (phaserRef.current) {
-      const config = {
-        ...PhaserConfig,
-        parent: phaserRef.current,
-      };
-
-      gameInstance.current = new Phaser.Game(config);
-
-      // Clean up the game instance when the component unmounts
-      return () => {
-        if (gameInstance.current) {
-          gameInstance.current.destroy(true);
-          gameInstance.current = null;
-        }
-      };
-    }
-  }, [phaserRef]);
-
   return (
-    <div className="App">
-      <div ref={phaserRef} />
-    </div>
+    <Router>
+      <Routes>
+        <Route exact path="/" element={<StartMenu />} />
+        <Route path="/game" element={<PhaserGame />} /> 
+        <Route path="/leaderboard" element={<LeaderBoard />} />
+      </Routes>
+    </Router>
   );
 }
 

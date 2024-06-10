@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import BackgroundScene from './BackgroundScene';
 import CollisionScene from './CollisionScene';
 
+
+
 class PhaserGame extends Phaser.Scene {
   constructor() {
     super({ key: 'main' });
@@ -187,6 +189,7 @@ class PhaserGame extends Phaser.Scene {
       sprite.setVelocity(randomXVelocity, randomYVelocity);
     }
   }
+  
 }
 
-export default PhaserGame;
+export default new PhaserGame;

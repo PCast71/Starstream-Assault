@@ -1,24 +1,19 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-const StartGame = () => {
-    const history = useHistory();
+const StarGame = () => (
+  <div>
+    <h1>Star Game</h1>
+    <button onClick={startGame}>Start Game</button>
+    <Link to="/leaderboard">
+      <button>View Leaderboard</button>
+    </Link>
+  </div>
+);
 
-    const StartGame = () => {
-        history.push('/game');
-    };
-
-    return (
-        <div>
-            <h1>Start Game</h1>
-            <button onClick={StartGame}>Start Game</button>
-            <Leaderboard />
-        </div>
-    );
+const startGame = () => {
+  // Logic to start the game
+  console.log('Game started!');
 };
 
-const Leaderboard = () => {
-    return <div>Leaderboard</div>
-};
-
-export default StartGame;
+export default StarGame;
