@@ -107,7 +107,7 @@ class PhaserGame extends Phaser.Scene {
       projectile.body.velocity.x = 300;
       projectile.angle = 90;
     }
-  }s
+  }
 
   handleCollision(player, enemy) {
     player.setActive(false).setVisible(false);
