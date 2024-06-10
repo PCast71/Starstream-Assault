@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const GET_LEADERBOARD = gql`
   query GetLeaderboard {
@@ -24,7 +24,7 @@ const ADD_SCORE = gql`
 
 const Leaderboard = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // useNavigate instead of useHistory
+  const navigate = useNavigate();
   const { score } = location.state || { score: 0 };
   const { loading, error, data } = useQuery(GET_LEADERBOARD);
   const [addScore] = useMutation(ADD_SCORE);
@@ -44,7 +44,7 @@ const Leaderboard = () => {
   if (error) return <p>Error :(</p>;
 
   const restartGame = () => {
-    navigate('/game'); // use navigate instead of history.push
+    navigate('/game');
   };
 
   return (
