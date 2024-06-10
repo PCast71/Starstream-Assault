@@ -2,10 +2,8 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const connectDB = require('./config/db'); // Ensure you have the correct path
-const authRoutes = require('./routes/authRoutes');
 const cors = require('cors');
 const leaderboardRoutes = require('./routes/leaderboardRoutes');
-const authMiddleware = require('./middleware/authMiddleware');
 
 // Import typeDefs and resolvers
 const typeDefs = require('./graphql/typeDefs');
@@ -32,7 +30,6 @@ app.use('/api', createProxyMiddleware({
 }));
 
 // Establishing routes
-app.use('/api/auth', authRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 
 async function startServer() {
@@ -42,7 +39,7 @@ async function startServer() {
     console.log('Connected to the database');
 
     // Apollo server setup
-    const server = new ApolloServer({ typeDefs, resolvers, context: authMiddleware });
+    const server = new ApolloServer({ typeDefs, resolvers });
     await server.start();
     server.applyMiddleware({ app });
 
