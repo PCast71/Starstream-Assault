@@ -40,7 +40,13 @@ async function startServer() {
     const server = new ApolloServer({ typeDefs, resolvers });
     await server.start();
     server.applyMiddleware({ app });
-
+    if (process.env.NODE_ENV === 'production') {
+      app.use(express.static(path.join(__dirname, '../client/dist')));
+  
+      app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+      });
+    }
     // Start the server only after the database connection is established
     app.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
