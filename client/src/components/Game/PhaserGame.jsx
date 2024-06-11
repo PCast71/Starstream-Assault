@@ -73,7 +73,7 @@ class PhaserGame extends Phaser.Scene {
 
     // Spawn boss after a delay (e.g., 90 seconds)
     console.log('Boss will spawn in 90 seconds');
-    this.time.delayedCall(90000, this.spawnBoss, [], this); // Ensure the delay is correct
+    this.time.delayedCall(60000, this.spawnBoss, [], this); // Ensure the delay is correct
   }
 
   update() {
@@ -220,7 +220,7 @@ class PhaserGame extends Phaser.Scene {
     this.boss = this.physics.add.sprite(400, 50, 'boss'); // Spawn at the top
     this.boss.setScale(3);
     this.boss.setVelocity(0, 100); // Move down initially
-    this.boss.health = 800;
+    this.boss.health = 600;
 
     // Create boss projectiles
     this.bossProjectiles = this.physics.add.group({ 
@@ -375,4 +375,4 @@ class PhaserGame extends Phaser.Scene {
 }
 
 export default PhaserGame;
-//adding comment for new commit
+//adding comment for new commit #2
