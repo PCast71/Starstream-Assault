@@ -3,6 +3,7 @@ const { ApolloServer } = require('apollo-server-express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const connectDB = require('./config/db');
 const cors = require('cors');
+const path = require('path');
 const leaderboardRoutes = require('./routes/leaderboardRoutes');
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
@@ -40,13 +41,13 @@ async function startServer() {
     const server = new ApolloServer({ typeDefs, resolvers });
     await server.start();
     server.applyMiddleware({ app });
-    if (process.env.NODE_ENV === 'production') {
+    // if (process.env.NODE_ENV === 'production') {
       app.use(express.static(path.join(__dirname, '../client/dist')));
   
-      app.get('*', (req, res) => {
+      app.get('/', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/dist/index.html'));
       });
-    }
+    // }
     // Start the server only after the database connection is established
     app.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
