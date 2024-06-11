@@ -73,7 +73,7 @@ class PhaserGame extends Phaser.Scene {
 
     // Spawn boss after a delay (e.g., 90 seconds)
     console.log('Boss will spawn in 90 seconds');
-    this.time.delayedCall(7000, this.spawnBoss, [], this); // Ensure the delay is correct
+    this.time.delayedCall(90000, this.spawnBoss, [], this); // Ensure the delay is correct
   }
 
   update() {
