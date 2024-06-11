@@ -27,7 +27,6 @@ class PhaserGame extends Phaser.Scene {
 
   create() {
     // Add scenes
-    
     this.scene.add('BackgroundScene', BackgroundScene, true);
     this.scene.add('CollisionScene', CollisionScene, true);
     this.scene.bringToTop('main');
@@ -74,7 +73,7 @@ class PhaserGame extends Phaser.Scene {
 
     // Spawn boss after a delay (e.g., 90 seconds)
     console.log('Boss will spawn in 90 seconds');
-    this.time.delayedCall(7000, this.spawnBoss, [], this); // Ensure the delay is correct
+    this.time.delayedCall(90000, this.spawnBoss, [], this); // Ensure the delay is correct
   }
 
   update() {
@@ -217,14 +216,7 @@ class PhaserGame extends Phaser.Scene {
   }
 
   spawnBoss() {
-
     console.log('Boss is spawning');
-
-    if (!this.bossMusicPlayed) {
-      this.bossMusicPlayed = true;
-      this.scene.get('BackgroundScene').playBossMusic(); // Call method in BackgroundScene to play boss music
-    }
-
     this.boss = this.physics.add.sprite(400, 50, 'boss'); // Spawn at the top
     this.boss.setScale(3);
     this.boss.setVelocity(0, 100); // Move down initially
