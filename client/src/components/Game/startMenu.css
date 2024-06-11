@@ -104,7 +104,7 @@ button:focus {
   position: absolute;
   width: 50px;
   height: 50px;
-  background: url('/sprites/player/Ships/Enemies/enemies-6.png') no-repeat center center;
+  background: url('/sprites/player/Ships/Enemies/Enemies-6.png') no-repeat center center;
   background-size: contain;
   transition: right 2s, top 2s;
 }
@@ -112,7 +112,7 @@ button:focus {
 .enemy.boss {
   width: 100px;
   height: 100px;
-  background: url('/sprites/player/Ships/Enemies/enemies-6b.png') no-repeat center center;
+  background: url('/sprites/player/Ships/Enemies/Enemies-6b.png') no-repeat center center;
   background-size: contain;
 }
 
