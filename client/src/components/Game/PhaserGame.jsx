@@ -14,7 +14,7 @@ class PhaserGame extends Phaser.Scene {
 
   preload() {
     // Load assets
-    this.load.image('player', '/sprites/player/Ships/blue-1.png');
+    this.load.image('player', '/sprites/player/Ships/Blue-1.png');
     this.load.image('projectile', '/sprites/player/Projectiles/missile-2.png');
     this.load.image('enemy1', '/sprites/player/Ships/Enemies/Enemies-1.png');
     this.load.image('enemy2', '/sprites/player/Ships/Enemies/Enemies-4.png');
