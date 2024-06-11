@@ -85,10 +85,20 @@ button:focus {
   position: absolute;
   width: 50px;
   height: 50px;
-  background: url('/sprites/player/Ships/blue-1.png') no-repeat center center;
+  background: url('/sprites/player/Ships/Red-1.png') no-repeat center center;
   background-size: contain;
   transition: left 2s, bottom 2s;
+  z-index: 3;
 }
+.laser-beam {
+  position: absolute;
+  width: 50px; /* Adjust the width based on your design */
+  height: 50px; /* Adjust the height based on your design */
+  background: url('/sprites/player/Projectiles/projectile02-1.png') center center no-repeat;
+  background-size: contain; /* Adjust this property based on your image size */
+  transform: rotate(90deg);
+}
+
 
 .enemy {
   position: absolute;
@@ -102,6 +112,15 @@ button:focus {
 .enemy.boss {
   width: 100px;
   height: 100px;
-  background: url('/sprites/player/Ships/Enemies/boss.png') no-repeat center center;
+  background: url('/sprites/player/Ships/Enemies/enemies-6b.png') no-repeat center center;
   background-size: contain;
+}
+
+.boss-laser-beam{
+  position: absolute;
+  width: 50px; /* Adjust the width based on your design */
+  height: 50px; /* Adjust the height based on your design */
+  background: url('/sprites/player/Projectiles/projectile02-4.png') center center no-repeat;
+  background-size: contain; /* Adjust this property based on your image size */
+  transform: rotate(-90deg);
 }

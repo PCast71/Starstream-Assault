@@ -25,6 +25,7 @@ class PhaserGame extends Phaser.Scene {
 
   create() {
     // Add scenes
+    
     this.scene.add('BackgroundScene', BackgroundScene, true);
     this.scene.add('CollisionScene', CollisionScene, true);
     this.scene.bringToTop('main');
@@ -195,6 +196,10 @@ class PhaserGame extends Phaser.Scene {
   }
 
   spawnBoss() {
+    if (!this.bossMusicPlayed) {
+      this.bossMusicPlayed = true;
+      this.scene.get('BackgroundScene').playBossMusic(); // Call method in BackgroundScene to play boss music
+    }
     this.boss = this.physics.add.sprite(400, 50, 'boss'); // Spawn at the top
     this.boss.setScale(3);
     this.boss.setVelocity(0, 100); // Move down initially
