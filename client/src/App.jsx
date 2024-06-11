@@ -11,6 +11,11 @@ const client = new ApolloClient({
 });
 
 function App() {
+  const title = 'Starstream Assault';
+  useEffect(() => {
+    document.title = title;
+  }, []);
+
   return (
     <ApolloProvider client={client}>
       <Router>
