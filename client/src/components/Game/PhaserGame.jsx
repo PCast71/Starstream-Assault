@@ -9,6 +9,7 @@ class PhaserGame extends Phaser.Scene {
     this.canShoot = true;
     this.playerRespawnDelay = 1000; // Adjust respawn delay as needed (in milliseconds)
     this.score = 0; // Add score variable
+    this.maxEnemies = 20; // Maximum number of enemies on screen at once
   }
 
   preload() {
@@ -67,11 +68,12 @@ class PhaserGame extends Phaser.Scene {
     // Add score text
     this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
 
-    // Spawn random enemies
-    this.spawnEnemies();
+    // Start spawning enemies after a delay
+    this.time.delayedCall(5000, this.startSpawningEnemies, [], this);
 
     // Spawn boss after a delay (e.g., 90 seconds)
-    this.time.delayedCall(7000, this.spawnBoss, [], this); // Change the delay as needed
+    console.log('Boss will spawn in 90 seconds');
+    this.time.delayedCall(7000, this.spawnBoss, [], this); // Ensure the delay is correct
   }
 
   update() {
@@ -168,26 +170,29 @@ class PhaserGame extends Phaser.Scene {
   }
 
   spawnEnemies() {
-    const enemyImages = ['enemy1', 'enemy2', 'enemy3'];
-    const numEnemies = Phaser.Math.Between(5, 10); // Random number of enemies
+    // Check if the number of active enemies is below the limit
+    if (this.enemies.countActive(true) < this.maxEnemies) {
+      const enemyImages = ['enemy1', 'enemy2', 'enemy3'];
+      const numEnemies = Phaser.Math.Between(1, 3); // Random number of enemies to spawn (adjust as needed)
 
-    for (let i = 0; i < numEnemies; i++) {
-      const x = Phaser.Math.Between(800, 1400); // Spawn enemies off-screen
-      const y = Phaser.Math.Between(50, 750); // Random vertical position
+      for (let i = 0; i < numEnemies; i++) {
+        const x = Phaser.Math.Between(800, 1400); // Spawn enemies off-screen
+        const y = Phaser.Math.Between(50, 750); // Random vertical position
 
-      const enemyImage = enemyImages[Phaser.Math.Between(0, enemyImages.length - 1)];
-      const enemy = this.enemies.create(x, y, enemyImage);
-      
-      // Set random velocity for the enemy
-      this.setRandomVelocity(enemy);
+        const enemyImage = enemyImages[Phaser.Math.Between(0, enemyImages.length - 1)];
+        const enemy = this.enemies.create(x, y, enemyImage);
+        
+        // Set random velocity for the enemy
+        this.setRandomVelocity(enemy);
 
-      // Timer to change enemy direction periodically
-      this.time.addEvent({
-        delay: 2000,
-        callback: () => this.setRandomVelocity(enemy),
-        loop: true,
-        callbackScope: this
-      });
+        // Timer to change enemy direction periodically
+        this.time.addEvent({
+          delay: 2000,
+          callback: () => this.setRandomVelocity(enemy),
+          loop: true,
+          callbackScope: this
+        });
+      }
     }
   }
 
@@ -201,11 +206,21 @@ class PhaserGame extends Phaser.Scene {
     }
   }
 
+  startSpawningEnemies() {
+    this.enemySpawnEvent = this.time.addEvent({
+      delay: 3000, // Adjust delay as needed for enemy spawn rate
+      callback: this.spawnEnemies,
+      callbackScope: this,
+      loop: true
+    });
+  }
+
   spawnBoss() {
+    console.log('Boss is spawning');
     this.boss = this.physics.add.sprite(400, 50, 'boss'); // Spawn at the top
     this.boss.setScale(3);
     this.boss.setVelocity(0, 100); // Move down initially
-    this.boss.health = 150;
+    this.boss.health = 800;
 
     // Create boss projectiles
     this.bossProjectiles = this.physics.add.group({ 
@@ -321,6 +336,9 @@ class PhaserGame extends Phaser.Scene {
       this.bossShootEvent1.remove();
       this.bossShootEvent2.remove();
       this.bossMoveEvent.remove();
+
+      // Stop enemy spawning event
+      this.enemySpawnEvent.remove();
 
       // Remove boss from the scene
       this.physics.world.remove(boss);
